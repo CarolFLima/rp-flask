@@ -1,47 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Dashboardsdaerus</title>
-    <link rel="stylesheet" type="text/css" href= "{{ url_for('static',filename='styles/home.css') }}">
-</head>
-<body>
-    <div class="sidebar">
-        <div class="sidebar-brand">
-            <h1> <span class="lab la-accusoft"></span> Dashboard </h1>
+<html>
+  <head>
+    <title>Wordcount</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <style>
+      .container {
+        max-width: 1000px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Wordcount 3000</h1>
+      <form role="form" method='POST' action='/'>
+        <div class="form-group">
+          <input type="text" name="url" class="form-control" id="url-box" placeholder="Enter URL..." style="max-width: 300px;" autofocus required>
         </div>
-
-        <div class="sidebar-menu">
-            <ul>
-                <li><a href=""><span>General</span></a>
-                </li>
-
-                <li><a href=""><span>Balance</span></a>
-                </li>
-
-                <li><a href=""><span>TODO</span></a>
-                </li>
-            </ul>
-        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+      </form>
+      <br>
+      {% for error in errors %}
+        <h4>{{ error }}</h4>
+      {% endfor %}
     </div>
-
-    <div class="main-content">
-        <header>
-            <h1>
-                <label for=""></label>
-                General view
-            </h1>
-            <div class="search-wrapper">
-                <input type="search" placeholder="search here">
-            </div>
-        </header>
-
-        <main>
-            <div></div>
-        </main>
-
-
-    </div>
-
-</body>
+    <script src="//code.jquery.com/jquery-2.2.1.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  </body>
 </html>
