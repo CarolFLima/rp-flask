@@ -5,6 +5,7 @@ import re
 import nltk
 from flask import Flask, render_template, request, logging
 from flask_sqlalchemy import SQLAlchemy
+from flask import jsonify
 from stop_words import stops
 from collections import Counter
 from bs4 import BeautifulSoup
@@ -89,8 +90,15 @@ def get_results(job_key):
 
     job = Job.fetch(job_key, connection=conn)
 
-    if job.is_finished:
-        return str(job.result), 200
+    if not job.is_finished:
+        result = Result.query.filter_by(id=job.result).first()
+        print(f'resultadosss {result}')
+        results = sorted(
+            result.result_no_stop_words.items(),
+            key=operator.itemgetter(1),
+            reverse=True
+        )[:10]
+        return jsonify(results)
     else:
         return "Nay!", 202
 
