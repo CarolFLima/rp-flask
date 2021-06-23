@@ -16,6 +16,7 @@ from worker import conn
 
 app = Flask(__name__)
 app.config.from_object(os.environ['APP_SETTINGS'])
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
 
@@ -60,6 +61,7 @@ def count_and_save_words(url):
         )
         db.session.add(result)
         db.session.commit()
+        print(f'ID ---- {result.id}')
         return result.id
     except:
         errors.append("Unable to add item to database.")
@@ -77,30 +79,22 @@ def index():
         url = request.form['url']
         if not url[:8].startswith(('https://', 'http://')):
             url = 'http://' + url
-        job = q.enqueue_call(
-            func=count_and_save_words, args=(url,), result_ttl=5000
-        )
-        print(f'ID: -- {job.get_id()}')
+        count_and_save_words(url)
 
     return render_template('index.html', results=results)
 
 
-@app.route("/results/<job_key>", methods=['GET'])
-def get_results(job_key):
+@app.route("/results/<url_key>", methods=['GET'])
+def get_results(url_key):
 
-    job = Job.fetch(job_key, connection=conn)
-
-    if not job.is_finished:
-        result = Result.query.filter_by(id=job.result).first()
-        print(f'resultadosss {result}')
+        # result = Result.query.order_by(Result.id).all()
+        result = Result.query.filter_by(id=url_key).first()
         results = sorted(
             result.result_no_stop_words.items(),
             key=operator.itemgetter(1),
             reverse=True
         )[:10]
         return jsonify(results)
-    else:
-        return "Nay!", 202
 
 
 if __name__ == '__main__':
